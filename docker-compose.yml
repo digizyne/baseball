@@ -22,6 +22,8 @@ services:
     volumes:
       - ./backend:/app
     restart: unless-stopped
+    ports:
+      - "5000:5000"
     user: "1000:1000"
     env_file:
       - ./backend/.env

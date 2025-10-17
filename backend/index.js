@@ -1,9 +1,11 @@
 import express from "express";
 import { MongoClient, ObjectId } from "mongodb";
 import { GoogleGenAI } from "@google/genai";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const PORT = process.env.PORT || 5000;
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -80,15 +82,18 @@ app.patch("/players/:id", async (req, res) => {
 });
 
 app.get("/players", async (req, res) => {
+  const { sort_by_hrs } = req.query;
+
   const players = await mongoClient
     .db("baseball")
     .collection("players")
     .find({})
-    .limit(1)
+    .sort({ [sort_by_hrs && sort_by_hrs === "true" ? "home run" : "Hits"]: -1 })
+    .limit(100)
     .toArray();
   res.json(players);
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });
