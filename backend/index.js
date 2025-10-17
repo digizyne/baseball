@@ -91,6 +91,7 @@ app.get("/players", async (req, res) => {
     .sort({ [sort_by_hrs && sort_by_hrs === "true" ? "home run" : "Hits"]: -1 })
     .limit(100)
     .toArray();
+
   res.json(players);
 });
 
