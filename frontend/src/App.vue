@@ -22,9 +22,9 @@
     <UContainer class="pt-4">
       <div
         v-if="isFetching"
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
       >
-        <USkeleton v-for="n in 12" :key="n" class="w-full h-60 rounded-xl" />
+        <USkeleton v-for="n in 12" :key="n" class="w-full h-120 rounded-xl" />
       </div>
       <UError
         v-else-if="error"
@@ -34,26 +34,56 @@
           <UButton label="Retry" @click="refetchPlayers" />
         </template>
       </UError>
-      <div
-        v-else
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-      >
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <UBlogPost
           v-for="player in players"
           :key="player._id"
           :title="player['Player name']"
           :badge="player.position"
           :image="`https://api.dicebear.com/9.x/pixel-art/svg?seed=${player['Player name']}`"
-          :ui="{ image: 'object-fill bg-neutral-800' }"
+          :ui="{ image: 'object-fill bg-neutral-800', title: 'text-2xl' }"
           @click="selectPlayer(player)"
         >
           <template #description>
-            <div class="flex justify-between">
+            <div class="grid grid-cols-2 gap-4 pt-2">
               <div>
                 Hits: <b>{{ player["Hits"] }}</b>
               </div>
               <div>
                 HRs: <b>{{ player["home run"] }}</b>
+              </div>
+              <div>
+                Games: <b>{{ player["Games"] }}</b>
+              </div>
+              <div>
+                At-bat: <b>{{ player["At-bat"] }}</b>
+              </div>
+              <div>
+                Runs: <b>{{ player["Runs"] }}</b>
+              </div>
+              <div>
+                Double (2B): <b>{{ player["Double (2B)"] }}</b>
+              </div>
+              <div>
+                third baseman: <b>{{ player["third baseman"] }}</b>
+              </div>
+              <div>
+                Home Runs: <b>{{ player["home run"] }}</b>
+              </div>
+              <div>
+                Run batted in: <b>{{ player["run batted in"] }}</b>
+              </div>
+              <div>
+                Walks: <b>{{ player["a walk"] }}</b>
+              </div>
+              <div>
+                Strikeouts: <b>{{ player["Strikeouts"] }}</b>
+              </div>
+              <div>
+                Stolen base: <b>{{ player["stolen base"] }}</b>
+              </div>
+              <div>
+                Caught stealing: <b>{{ player["Caught stealing"] }}</b>
               </div>
             </div>
           </template>
@@ -149,6 +179,12 @@ const {
   refetch: true,
   afterFetch(ctx) {
     ctx.data = JSON.parse(ctx.data);
+    if (typeof window !== "undefined") {
+      // scroll to top when new data arrives
+      window.requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
     return ctx;
   },
 });
